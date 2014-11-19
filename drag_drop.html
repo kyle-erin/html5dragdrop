@@ -1,0 +1,137 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	</head>
+	<title>Drag and Drop</title>
+	<style>
+		.hover 
+		{
+			border: 10px dashed #333;
+		}
+		.nohover
+		{
+			border : 10px dashed #ccc;
+		}
+
+		#dropzone
+		{
+			width : 100px;
+			height : 150px;
+			background-color:#eee;
+		}
+	</style>
+	<body>
+		<div style='padding : 15px' class='container'>
+			<h1><center>Drag and Drop file test.</center></h1>
+			<hr>
+			<div class='row'>
+				<div class='col-sm-6'>
+					<div id='dropzone'></div>
+					<div>Drag and drop a file.</div>
+				</div>
+				<div class='col-sm-6'>
+					<div id='output'></div>
+					<table class="table table-bordered">
+						<tbody>
+							<tr>
+								<td>Name</td>
+								<td id='filename'></td>
+							</tr>
+							<tr>
+								<td>Size</td>
+								<td id='filesize'></td>
+							</tr>
+							<tr>
+								<td>Type</td>
+								<td id='filetype'></td>
+							</tr>
+							<tr>
+								<td>Last Modified</td>
+								<td id='filemod'></td>
+							</tr>
+							<tr>
+								<td>Webkit Relative Path</td>
+								<td id='web'></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+
+		// Handle for where to drop file
+		var dropzone = document.getElementById("dropzone");
+
+
+		/* Output elements for file attributes */
+		// The name of the file
+		var filename = document.getElementById("filename");
+
+		// Size of the file
+		var size = document.getElementById("filesize");
+
+		// Type of the file
+		var type = document.getElementById("filetype");
+
+		// When it was last modified
+		var mod = document.getElementById("filemod");
+
+		// webkit relative path
+		var web = document.getElementById("web");
+
+		// Default class
+		dropzone.className = "nohover";
+
+		/* Event handlers for visually indicating when a user is hovering over the drop dropzone */
+
+		// Handles when the user drags the file over the dropzone
+		dropzone.ondragover = function() {
+			this.className = "hover";
+			return false;
+		};
+
+		// Handles when a user drags the file out of the dropzone
+		dropzone.ondragleave = function(){
+			this.className = "nohover";
+			return false;
+		};
+
+		// Return to default style when done dragging		
+		dropzone.ondragend = function(){
+			this.className = "nohover";
+			return false;
+		};
+
+		// When file is dropped, get information on file and display it
+		dropzone.ondrop = function(e){
+			e.preventDefault();
+			this.className = 'nohover';
+
+			// Get a reference to the file
+			var file = e.dataTransfer.files[0];
+
+			// Reads the file
+			var	reader = new FileReader();
+
+			// Called after the reader finishes loading the file
+			reader.onload = function(event)
+			{
+				filename.innerHTML = file.name;
+				size.innerHTML = file.size + " bytes";
+				type.innerHTML = file.type;
+				mod.innerHTML = file.lastModifiedDate;
+				web.innerHTML = file.webkitRelativePath;
+				if(file.webkitRelativePath === "")
+				{
+					web.innerHTML = "<i>N/A</i>";
+				}
+			};
+
+			// Read the file
+			reader.readAsDataURL(file);
+			return false;
+		};
+	</script>
+</html>
